@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#091e23">
+  <meta name="description" content="A tactical game of mirrors and prisms. Turn the instruments of an ancient harbor and hold four sea gates against seven tides.">
+  <title>Heliograph · The Sea Gates</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='8' fill='%230e292f'/%3E%3Cg fill='none' stroke='%23ebcb91' stroke-width='2'%3E%3Ccircle cx='24' cy='24' r='18'/%3E%3Cpath d='M11 28h26M15 32h18M16 26a8 8 0 0 1 16 0M24 9v6m-12 4 5 2m19-2-5 2'/%3E%3C/g%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./ui.css">
+  <link rel="stylesheet" href="./board.css">
+  <script type="module" src="./app.mjs"></script>
+</head>
+<body>
+  <svg xmlns="http://www.w3.org/2000/svg" class="symbol-library" aria-hidden="true" focusable="false">
+    <symbol id="sigil" viewBox="0 0 64 64">
+      <circle cx="32" cy="32" r="28.5"/><circle cx="32" cy="32" r="24" stroke-dasharray="1 4"/>
+      <path d="M13 39h38M17 44h30M22 49h20M21 36a11 11 0 0 1 22 0M32 15v6M17 25l5 3m25-3-5 3M22 18l4 6m16-6-4 6"/>
+      <path d="m32 26 2.2 8.5L32 39l-2.2-4.5z" fill="currentColor"/>
+    </symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M3 12h16m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 6C9 4 6 4 2 5v13c4-1 7-1 10 1 3-2 6-2 10-1V5c-4-1-7-1-10 1zm0 0v13"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14m8-14v14" stroke-width="3"/></symbol>
+    <symbol id="i-sound" viewBox="0 0 24 24"><path d="M3 9h4l5-4v14l-5-4H3zm13-1a6 6 0 0 1 0 8m2-11a10 10 0 0 1 0 14"/></symbol>
+    <symbol id="i-muted" viewBox="0 0 24 24"><path d="M3 9h4l5-4v14l-5-4H3zm13 1 5 5m0-5-5 5"/></symbol>
+    <symbol id="i-undo" viewBox="0 0 24 24"><path d="M5 7v6h6m-6 0 4.5-5a6 6 0 1 1 4.5 10"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 1v4m0 14v4M1 12h4m14 0h4M4.2 4.2l2.9 2.9m9.8 9.8 2.9 2.9M4.2 19.8l2.9-2.9m9.8-9.8 2.9-2.9"/></symbol>
+    <symbol id="i-hull" viewBox="0 0 24 24"><path d="M3 12h18l-4 6H8zm8-8 5 6h-5zm0 0v8M3 20c2 1.5 3 1.5 5 0 2 1.5 4 1.5 6 0 2 1.5 4 1.5 7 0"/></symbol>
+    <symbol id="i-orders" viewBox="0 0 24 24"><path d="m4 17 5-5 4 1 6-7m-5 0h5v5"/><circle cx="4" cy="17" r="1.5"/></symbol>
+    <symbol id="i-mirror" viewBox="0 0 24 24"><path d="M4 18 17 5l3 3L7 21zm2 1 9 1"/></symbol>
+    <symbol id="i-prism" viewBox="0 0 24 24"><path d="m12 3 9 16H3zm0 0 2.5 16M4 13h5m5-2 6-4m-5 8 7 1"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-tide" viewBox="0 0 24 24"><path d="M3 12c2 2 4 2 6 0s4-2 6 0 4 2 6 0M3 17c2 2 4 2 6 0s4-2 6 0 4 2 6 0M7 7a5 5 0 0 1 10 0"/></symbol>
+  </svg>
+
+  <main>
+    <section id="title-screen" aria-labelledby="title-heading">
+      <div class="cover-art" aria-hidden="true"></div>
+      <div class="cover-border" aria-hidden="true"></div>
+      <div class="cover-content">
+        <div class="series-lockup"><svg class="series-mark" aria-hidden="true"><use href="#sigil"/></svg><span>The Sea Gates</span></div>
+        <div class="title-copy">
+          <div class="cover-rule" aria-hidden="true"><i></i></div>
+          <h1 id="title-heading">Heliograph</h1>
+          <p>Turn the mirrors. Split the light.<br>Hold the harbor through seven tides.</p>
+          <div class="title-actions">
+            <button id="resume" class="button primary" type="button" hidden>Resume campaign <svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+            <button id="begin" class="button primary" type="button">Begin campaign <svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+            <button id="daily" class="button daily" type="button"><svg aria-hidden="true"><use href="#i-tide"/></svg> Daily siege</button>
+            <button id="title-help" class="title-guide" type="button"><svg aria-hidden="true"><use href="#i-book"/></svg> How to play</button>
+          </div>
+          <p id="title-notice" class="title-notice" aria-live="polite"></p>
+        </div>
+        <div class="cover-caption" aria-hidden="true"><span class="caption-line"></span> A harbor of mirrors <span class="caption-line"></span></div>
+      </div>
+    </section>
+
+    <section id="game-screen" class="campaign" aria-labelledby="chart-title" hidden>
+      <header class="command-header">
+        <div class="game-wordmark"><svg class="game-sigil" aria-hidden="true"><use href="#sigil"/></svg><div><span class="series-name">The Sea Gates</span><h1>Heliograph</h1></div></div>
+        <div class="system-actions" aria-label="Game controls">
+          <button id="help" class="utility" type="button" title="How to play" aria-label="How to play"><svg aria-hidden="true"><use href="#i-book"/></svg></button>
+          <button id="sound" class="utility sound" type="button" title="Toggle sound" aria-label="Sound" aria-pressed="false"><svg class="sound-on" aria-hidden="true"><use href="#i-sound"/></svg><svg class="sound-off" aria-hidden="true"><use href="#i-muted"/></svg><span class="sr-only" id="sound-label">Sound</span></button>
+          <button id="pause" class="utility" type="button" title="Pause campaign" aria-label="Pause campaign"><svg aria-hidden="true"><use href="#i-pause"/></svg></button>
+        </div>
+      </header>
+
+      <div class="situation">
+        <div class="station-stat"><svg aria-hidden="true"><use href="#i-tide"/></svg><div><span>Tide</span><strong id="tide">1 / 7</strong></div></div>
+        <div class="station-stat"><svg aria-hidden="true"><use href="#i-hull"/></svg><div><span>Harbor hull</span><strong id="hull">—</strong></div></div>
+        <div class="station-stat"><svg aria-hidden="true"><use href="#i-orders"/></svg><div><span>Orders left</span><strong id="orders">—</strong></div></div>
+      </div>
+
+      <div class="tactics">
+        <section class="instruments" aria-labelledby="chart-title">
+          <div class="section-heading"><div><span class="eyebrow">Signal station</span><h2 id="chart-title">Harbor chart</h2></div><span class="chart-direction" aria-hidden="true">W <i></i> E</span></div>
+          <div class="chart-frame"><div id="board" aria-label="Optical board"></div></div>
+          <div class="chart-caption" aria-label="Instrument legend"><span><svg aria-hidden="true"><use href="#i-mirror"/></svg>Mirror <b>turns light</b></span><span><svg aria-hidden="true"><use href="#i-prism"/></svg>Prism <b>splits light</b></span></div>
+        </section>
+        <section class="recon" aria-labelledby="forecast-heading">
+          <div class="section-heading"><div><span class="eyebrow">Eastern approaches</span><h2 id="forecast-heading">Fleet forecast</h2></div></div>
+          <ol id="forecast" class="forecast-list" aria-label="Channel forecasts">
+            <li data-channel="0"><span class="channel-index" aria-hidden="true">I</span><span class="sr-only">Channel one. </span><span class="forecast-value">—</span></li>
+            <li data-channel="1"><span class="channel-index" aria-hidden="true">II</span><span class="sr-only">Channel two. </span><span class="forecast-value">—</span></li>
+            <li data-channel="2"><span class="channel-index" aria-hidden="true">III</span><span class="sr-only">Channel three. </span><span class="forecast-value">—</span></li>
+            <li data-channel="3"><span class="channel-index" aria-hidden="true">IV</span><span class="sr-only">Channel four. </span><span class="forecast-value">—</span></li>
+          </ol>
+          <p class="forecast-key">A ship sinks when its channel receives at least its hull strength in light.</p>
+        </section>
+        <section class="command-deck" aria-label="Volley controls">
+          <p id="status" aria-live="polite" aria-atomic="true">Select a mirror or prism to rotate it.</p>
+          <div class="volley-controls">
+            <button id="undo" class="button secondary" type="button"><svg aria-hidden="true"><use href="#i-undo"/></svg> Undo</button>
+            <button id="oracle" class="button secondary" type="button"><svg aria-hidden="true"><use href="#i-star"/></svg> Oracle</button>
+            <button id="fire" class="button primary volley" type="button"><svg aria-hidden="true"><use href="#i-sun"/></svg> Fire volley</button>
+          </div>
+        </section>
+        <p id="battle-report" aria-live="polite" class="battle-report"></p>
+        <p id="save-note" role="status" class="save-note"></p>
+      </div>
+      <footer class="chart-footer"><span class="footer-rule"></span><span>Campaign <b id="seed">—</b></span><span class="footer-rule"></span></footer>
+    </section>
+  </main>
+
+  <dialog id="help-dialog" aria-labelledby="help-heading" class="instrument-dialog">
+    <div class="dialog-top"><span class="eyebrow">Field manual</span><button class="utility" id="help-close" type="button" autofocus aria-label="Close field manual"><svg aria-hidden="true"><use href="#i-close"/></svg></button></div>
+    <h2 id="help-heading">How to play</h2>
+    <p>Light enters from the west. Guide it through the instruments and out into the eastern channels where ships are approaching.</p>
+    <dl class="manual">
+      <div><dt><svg aria-hidden="true"><use href="#i-mirror"/></svg> Rotate</dt><dd>Tap an instrument to turn it. On a keyboard, use the arrow keys to move and Enter or Space to turn. Each turn costs one order. Undo gives it back.</dd></div>
+      <div><dt><svg aria-hidden="true"><use href="#i-prism"/></svg> Split</dt><dd>Light enters at strength 4. A mirror turns the whole beam. A prism sends half straight ahead and reflects half. Watch which channels light up.</dd></div>
+      <div><dt><svg aria-hidden="true"><use href="#i-hull"/></svg> Defend</dt><dd>Read the fleet forecast before firing. A ship that receives too little light reaches the harbor and damages its hull. Survive seven tides to win.</dd></div>
+      <div><dt><svg aria-hidden="true"><use href="#i-star"/></svg> Oracle</dt><dd>Ask the Oracle for a move when you need help tracing a route. You still choose which instruments to turn.</dd></div>
+    </dl>
+  </dialog>
+
+  <dialog id="pause-dialog" class="instrument-dialog compact" aria-labelledby="pause-heading">
+    <div class="dialog-emblem"><svg aria-hidden="true"><use href="#sigil"/></svg></div>
+    <span class="eyebrow">Signal station</span><h2 id="pause-heading">Campaign paused</h2>
+    <div class="dialog-actions"><button id="continue" class="button primary" type="button" autofocus>Continue <svg aria-hidden="true"><use href="#i-arrow"/></svg></button><button id="to-title" class="button secondary" type="button">Title screen</button><button id="share" class="dialog-link" type="button">Copy challenge link</button></div><p id="share-status" class="share-status" role="status"></p>
+  </dialog>
+
+  <dialog id="replace-dialog" class="instrument-dialog compact" aria-labelledby="replace-title" aria-describedby="replace-copy">
+    <span class="eyebrow">Campaign record</span><h2 id="replace-title">Start over?</h2>
+    <p id="replace-copy">A new campaign will replace this voyage.</p>
+    <div class="dialog-actions"><button id="replace-cancel" class="button secondary" type="button" autofocus>Keep this voyage</button><button id="replace-confirm" class="button primary" type="button">Start new campaign <svg aria-hidden="true"><use href="#i-arrow"/></svg></button></div>
+  </dialog>
+
+  <dialog id="end-dialog" class="instrument-dialog compact" aria-labelledby="end-title" aria-describedby="end-copy">
+    <div class="dialog-emblem"><svg aria-hidden="true"><use href="#sigil"/></svg></div>
+    <span class="eyebrow">Campaign record</span><h2 id="end-title">Campaign complete</h2>
+    <p id="end-copy"></p>
+    <div class="dialog-actions"><button id="play-again" class="button primary" type="button" autofocus>New campaign <svg aria-hidden="true"><use href="#i-arrow"/></svg></button><button id="end-to-title" class="button secondary" type="button">Title screen</button><button id="end-share" class="dialog-link" type="button">Copy challenge link</button></div><p id="end-share-status" class="share-status" role="status"></p>
+  </dialog>
+</body>
+</html>

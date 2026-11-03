@@ -4,6 +4,27 @@ Two fleets approach a Hellenistic harbor. You have five moves before the horn so
 
 [Play The Sea Gates](https://sergiubisceanu.github.io/sea-gates/)
 
+## Heliograph
+
+Rotate mirrors and split beams through prisms to defend four harbor approaches for seven tides. Each tide’s chart, starting orientations and incoming ships depend on the campaign seed and tide number. Two players given the same seed and the same moves get the same result. [Play Heliograph](https://sergiubisceanu.github.io/sea-gates/heliograph/)
+
+An automated player can use the same rules as the browser. This example plays one tide using the built-in Oracle, which searches legal rotations within the remaining orders. The engine runs locally without model credentials.
+
+```js
+import { createGame, traceLight, oracle, rotate, defend, serializeGame }
+  from "./public/heliograph/engine.mjs";
+
+let game = createGame(2718);
+for (const { row, col } of oracle(game).moves) {
+  game = rotate(game, row, col);
+}
+console.log(traceLight(game).ports);  // Light reaching each of the four channels
+game = defend(game);                  // Fire the volley and resolve the tide
+const replay = serializeGame(game);   // Seed and move history
+```
+
+After `npm ci`, run `npm test` from the repository root to check both games. Heliograph’s campaign test compares four policies on the same hundred seeds.
+
 ## Your first tide
 
 Slide the highlighted limestone one square right onto the timber. This builds a Stone Catapult on the west bank. Sound the horn and watch it fire on the first black sail. If the harbor takes no damage, each move you left unspent earns eight extra Kleos.
@@ -39,5 +60,7 @@ npm run typecheck
 npm run build
 npm test
 ```
+
+Heliograph uses plain browser modules in `public/heliograph/`. The same build copies them into `docs/heliograph/`.
 
 For a longer balance check, `npm run playtest:balance` plays seeded campaigns from the opening board and prints the tide each policy reaches. To publish a fork, select **Settings → Pages → Deploy from a branch**, then **main** and **/docs**. The build uses relative asset paths so it also works under a different repository name.
