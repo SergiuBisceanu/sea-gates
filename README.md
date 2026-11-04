@@ -4,6 +4,12 @@ Two fleets approach a Hellenistic harbor. You have five moves before the horn so
 
 [Play The Sea Gates](https://sergiubisceanu.github.io/sea-gates/)
 
+## Daily Watch
+
+Build a harbor defense across seven tides, return for a new UTC daily, or keep a longer voyage going. Three-piece matches build and upgrade ancient machines. Guest progress stays in the browser, and the hosted edition can save validated daily results to an account. [Play Daily Watch](https://sergiubisceanu.github.io/sea-gates/watch/) · [Open the account edition](https://sea-gates-watch.edcr.chatgpt.site/play/index.html)
+
+The editable client is in `public/watch/`, and `npm run build` copies it into `docs/watch/`. The focused account source and deployment notes are in `daily-watch-server/`. Run `npm test` for the shared checks or `npm run playtest:watch` for seeded campaign comparisons.
+
 ## Heliograph
 
 Rotate mirrors and split beams through prisms to defend four harbor approaches for seven tides. Each tide’s chart, starting orientations and incoming ships depend on the campaign seed and tide number. Two players given the same seed and the same moves get the same result. [Play Heliograph](https://sergiubisceanu.github.io/sea-gates/heliograph/)
@@ -23,7 +29,7 @@ game = defend(game);                  // Fire the volley and resolve the tide
 const replay = serializeGame(game);   // Seed and move history
 ```
 
-After `npm ci`, run `npm test` from the repository root to check both games. Heliograph’s campaign test compares four policies on the same hundred seeds.
+After `npm ci`, run `npm test` from the repository root to check all three games. Heliograph’s campaign test compares four policies on the same hundred seeds.
 
 ## Your first tide
 
